@@ -598,37 +598,14 @@
 </head>
 <body class="lang-en">
 
-<!-- API KEY MODAL -->
-<div id="apiKeyModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:999; align-items:center; justify-content:center; padding:1rem;">
-  <div style="background:var(--cream); border:3px solid var(--black); max-width:460px; width:100%; padding:2rem;">
-    <div style="font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:3px; margin-bottom:0.25rem;">API KEY REQUIRED</div>
-    <p style="font-family:'Open Sans',sans-serif; font-size:0.82rem; color:var(--muted); margin-bottom:1.25rem; line-height:1.6;">
-      Enter your Anthropic API key to fetch live news.<br>
-      Your key is saved only in <strong>your browser</strong> — never sent anywhere else.<br><br>
-      Get a free key at <strong>console.anthropic.com</strong>
-    </p>
-    <input id="apiKeyInput" type="password" placeholder="sk-ant-api03-..."
-      style="width:100%; border:2px solid var(--black); background:#faf6ee; padding:0.75rem 1rem; font-family:'Open Sans',sans-serif; font-size:0.85rem; margin-bottom:0.5rem; outline:none; display:block;"
-      onkeydown="if(event.key==='Enter') submitApiKey()" />
-    <div id="apiKeyError" style="display:none; color:var(--red); font-family:'Open Sans',sans-serif; font-size:0.75rem; font-weight:600; margin-bottom:0.5rem;">&#9888; Invalid key. Must start with sk-ant-</div>
-    <div style="display:flex; gap:0.75rem; margin-top:0.75rem;">
-      <button onclick="submitApiKey()" style="flex:1; background:var(--black); color:var(--cream); border:2px solid var(--black); padding:0.75rem; font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:2px; cursor:pointer;">SAVE &amp; FETCH</button>
-      <button onclick="hideApiKeyModal()" style="background:var(--cream); color:var(--black); border:2px solid var(--black); padding:0.75rem 1.25rem; font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:2px; cursor:pointer;">CANCEL</button>
-    </div>
-  </div>
-</div>
-
 <header>
   <div>
     <div class="logo">Tech<span>Pulse</span></div>
     <div class="logo-sub">Your Daily Spark · Technology</div>
   </div>
-  <div style="display:flex; gap:0.5rem; align-items:center;">
-    <div class="lang-toggle">
-      <button class="lang-btn active" onclick="setLang('en')">English</button>
-      <button class="lang-btn" onclick="setLang('zh')">繁體中文</button>
-    </div>
-    <button onclick="showApiKeyModal()" title="Set API Key" style="background:var(--cream); border:2px solid var(--black); padding:0.35rem 0.75rem; cursor:pointer; font-family:'Open Sans',sans-serif; font-size:0.75rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; transition:background 0.15s;" onmouseover="this.style.background='var(--yellow)'" onmouseout="this.style.background='var(--cream)'">&#128273; KEY</button>
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('en')">English</button>
+    <button class="lang-btn" onclick="setLang('zh')">繁體中文</button>
   </div>
 </header>
 
@@ -645,266 +622,56 @@
     <div class="doodle-cup">☕</div>
   </div>
 
-  <!-- FETCH BAR -->
-  <div class="fetch-bar">
-    <button class="fetch-btn" id="fetchBtn" onclick="fetchNews()">
-      ⚡ <span id="fetchBtnText">FETCH LATEST NEWS</span>
-    </button>
-    <span class="status-text" id="statusText"></span>
+  <!-- Last updated -->
+  <div style="font-family:'Open Sans',sans-serif; font-size:0.75rem; color:var(--muted); font-style:italic; margin-bottom:1.5rem;">
+    🕐 Last updated: <!-- UPDATED_TIME -->Never — run the GitHub Action to populate news<!-- /UPDATED_TIME -->
   </div>
 
-  <div id="errorMsg" class="error-msg" style="display:none;"></div>
-  <div class="loading-overlay" id="loadingOverlay">
-    <div class="spinner"></div>
-    <div class="loading-text">Analyzing Headlines...</div>
+  <!-- CEFR Legend -->
+  <div class="cefr-legend">
+    <span class="cefr-legend-label">CEFR Level:</span>
+    <span class="cefr-legend-item"><span class="cefr-badge cefr-A1">A1</span> Beginner</span>
+    <span class="cefr-legend-item"><span class="cefr-badge cefr-A2">A2</span> Elementary</span>
+    <span class="cefr-legend-item"><span class="cefr-badge cefr-B1">B1</span> Intermediate</span>
+    <span class="cefr-legend-item"><span class="cefr-badge cefr-B2">B2</span> Upper-Int.</span>
+    <span class="cefr-legend-item"><span class="cefr-badge cefr-C1">C1</span> Advanced</span>
+    <span class="cefr-legend-item"><span class="cefr-badge cefr-C2">C2</span> Mastery</span>
   </div>
 
-  <div id="newsSection" style="display:none;">
-
-    <!-- CEFR Legend -->
-    <div class="cefr-legend">
-      <span class="cefr-legend-label">CEFR Level:</span>
-      <span class="cefr-legend-item"><span class="cefr-badge cefr-A1">A1</span> Beginner</span>
-      <span class="cefr-legend-item"><span class="cefr-badge cefr-A2">A2</span> Elementary</span>
-      <span class="cefr-legend-item"><span class="cefr-badge cefr-B1">B1</span> Intermediate</span>
-      <span class="cefr-legend-item"><span class="cefr-badge cefr-B2">B2</span> Upper-Int.</span>
-      <span class="cefr-legend-item"><span class="cefr-badge cefr-C1">C1</span> Advanced</span>
-      <span class="cefr-legend-item"><span class="cefr-badge cefr-C2">C2</span> Mastery</span>
+  <div class="section-label">
+    <span class="en-text">Top Stories</span>
+    <span class="zh-text">頭條新聞</span>
+  </div>
+  <div class="news-grid">
+    <!-- NEWS_CARDS_START -->
+    <div style="grid-column:1/-1; padding:3rem; text-align:center; font-family:'Open Sans',sans-serif; color:var(--muted); font-style:italic; font-size:0.9rem;">
+      News not yet loaded — the GitHub Action will populate this automatically every 6 hours.
     </div>
-
-    <div class="section-label">
-      <span class="en-text">Top Stories</span>
-      <span class="zh-text">頭條新聞</span>
-    </div>
-    <div class="news-grid" id="newsGrid"></div>
-
-    <div class="section-label" style="margin-top:2rem;">
-      <span class="en-text">Vocabulary & Phrases</span>
-      <span class="zh-text">詞彙與片語</span>
-    </div>
-    <div class="vocab-section">
-      <div class="vocab-header">
-        <span>Words to Know</span>
-        <span class="vocab-header-sub">Rated by CEFR difficulty</span>
-      </div>
-      <div class="vocab-grid" id="vocabGrid"></div>
-    </div>
+    <!-- NEWS_CARDS_END -->
   </div>
 
-  <div id="emptyState" class="empty-state">
-    <div class="empty-icon">📡</div>
-    <div class="empty-title">AWAITING SIGNAL</div>
-    <p class="empty-sub">Click "Fetch Latest News" to load AI-curated tech headlines.</p>
+  <div class="section-label" style="margin-top:2rem;">
+    <span class="en-text">Vocabulary &amp; Phrases</span>
+    <span class="zh-text">詞彙與片語</span>
+  </div>
+  <div class="vocab-section">
+    <div class="vocab-header">
+      <span>Words to Know</span>
+      <span class="vocab-header-sub">Rated by CEFR difficulty</span>
+    </div>
+    <div class="vocab-grid">
+      <!-- VOCAB_CARDS_START -->
+      <!-- VOCAB_CARDS_END -->
+    </div>
   </div>
 
 </div>
 
 <script>
-let currentLang = 'en';
-const API_KEY_STORAGE = 'techpulse_api_key';
-
-function getApiKey() {
-  return localStorage.getItem(API_KEY_STORAGE) || '';
-}
-
-function saveApiKey(key) {
-  localStorage.setItem(API_KEY_STORAGE, key.trim());
-}
-
-function clearApiKey() {
-  localStorage.removeItem(API_KEY_STORAGE);
-}
-
-function showApiKeyModal() {
-  document.getElementById('apiKeyModal').style.display = 'flex';
-  document.getElementById('apiKeyInput').value = getApiKey();
-  document.getElementById('apiKeyInput').focus();
-}
-
-function hideApiKeyModal() {
-  document.getElementById('apiKeyModal').style.display = 'none';
-}
-
-function submitApiKey() {
-  const val = document.getElementById('apiKeyInput').value.trim();
-  if (!val.startsWith('sk-ant-')) {
-    document.getElementById('apiKeyError').style.display = 'block';
-    return;
-  }
-  document.getElementById('apiKeyError').style.display = 'none';
-  saveApiKey(val);
-  hideApiKeyModal();
-  fetchNews();
-}
-
 function setLang(lang) {
-  currentLang = lang;
   document.body.className = `lang-${lang}`;
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
   document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
-}
-
-function extractJSON(text) {
-  text = text.replace(/```json\s*/gi, '').replace(/```\s*/g, '');
-  const start = text.indexOf('{');
-  const end = text.lastIndexOf('}');
-  if (start === -1 || end === -1) throw new Error("No JSON object found in response");
-  let jsonStr = text.slice(start, end + 1);
-  jsonStr = jsonStr.replace(/,\s*([}\]])/g, '$1');
-  jsonStr = jsonStr.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
-  return JSON.parse(jsonStr);
-}
-
-function getCEFRClass(level) {
-  const map = { A1:'cefr-A1', A2:'cefr-A2', B1:'cefr-B1', B2:'cefr-B2', C1:'cefr-C1', C2:'cefr-C2' };
-  return map[(level||'').toUpperCase()] || 'cefr-B1';
-}
-
-async function fetchNews() {
-  const apiKey = getApiKey();
-  if (!apiKey) { showApiKeyModal(); return; }
-
-  const btn = document.getElementById('fetchBtn');
-  const btnText = document.getElementById('fetchBtnText');
-  const loading = document.getElementById('loadingOverlay');
-  const newsSection = document.getElementById('newsSection');
-  const emptyState = document.getElementById('emptyState');
-  const errorMsg = document.getElementById('errorMsg');
-
-  btn.disabled = true;
-  btnText.textContent = 'LOADING...';
-  loading.classList.add('visible');
-  newsSection.style.display = 'none';
-  emptyState.style.display = 'none';
-  errorMsg.style.display = 'none';
-
-  try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true"
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 4000,
-        tools: [{ "type": "web_search_20250305", "name": "web_search" }],
-        messages: [{
-          role: "user",
-          content: `Search for the 5 most important technology news stories from today or the past 2 days.
-
-After searching, respond with ONLY a raw JSON object — no markdown, no backticks, no explanation before or after. Use this exact structure:
-
-{
-  "articles": [
-    {
-      "tag": "category like AI/Hardware/Software/Cybersecurity/Startup",
-      "cefr": "B2",
-      "title_en": "English title",
-      "title_zh": "Traditional Chinese title",
-      "summary_en": "2-3 sentence English summary",
-      "summary_zh": "2-3 sentence Traditional Chinese summary",
-      "source": "source name",
-      "date": "today or X days ago"
-    }
-  ],
-  "vocabulary": [
-    {
-      "word": "English word or phrase",
-      "cefr": "B2",
-      "zh": "Traditional Chinese translation",
-      "definition": "Brief English definition",
-      "example": "short example sentence from the news context"
-    }
-  ]
-}
-
-For the "cefr" field on each article, rate the reading difficulty: A1=very simple, A2=simple, B1=intermediate, B2=upper-intermediate, C1=advanced, C2=near-native. Tech news is typically B2-C1.
-For each vocabulary word, rate the word difficulty on the CEFR scale.
-
-Return exactly 5 articles and exactly 5 vocabulary items. Raw JSON only — nothing else.`
-        }]
-      })
-    });
-
-    if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      throw new Error(errData.error?.message || `API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const fullText = data.content
-      .map(item => item.type === "text" ? item.text : "")
-      .filter(Boolean)
-      .join("\n");
-
-    if (!fullText.trim()) throw new Error("Empty response from API");
-
-    const newsData = extractJSON(fullText);
-    if (!newsData.articles || !newsData.vocabulary) throw new Error("Response missing required fields");
-
-    renderNews(newsData);
-    document.getElementById('statusText').textContent = `Updated: ${new Date().toLocaleTimeString()}`;
-    newsSection.style.display = 'block';
-
-  } catch (err) {
-    console.error("Full error:", err);
-    errorMsg.textContent = `⚠️ Error fetching news: ${err.message}. Please try again.`;
-    errorMsg.style.display = 'block';
-    emptyState.style.display = 'block';
-  } finally {
-    btn.disabled = false;
-    btnText.textContent = 'REFRESH NEWS';
-    loading.classList.remove('visible');
-  }
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-}
-
-function renderNews(data) {
-  const grid = document.getElementById('newsGrid');
-  const vocabGrid = document.getElementById('vocabGrid');
-
-  grid.innerHTML = data.articles.map((a, i) => {
-    const cefr = (a.cefr || 'B2').toUpperCase();
-    return `
-    <div class="news-card" style="animation-delay:${i * 0.07}s">
-      <div class="card-top">
-        <div class="card-tag">${escapeHtml(a.tag)}</div>
-        <div class="cefr-badge ${getCEFRClass(cefr)}" title="CEFR Reading Level: ${escapeHtml(cefr)}">${escapeHtml(cefr)}</div>
-      </div>
-      <div class="card-title">${escapeHtml(a.title_en)}</div>
-      <div class="card-title-zh">${escapeHtml(a.title_zh)}</div>
-      <div class="card-summary">${escapeHtml(a.summary_en)}</div>
-      <div class="card-summary-zh">${escapeHtml(a.summary_zh)}</div>
-      <div class="card-footer">
-        <span>📰 ${escapeHtml(a.source)}</span>
-        <span>${escapeHtml(a.date)}</span>
-      </div>
-    </div>`;
-  }).join('');
-
-  vocabGrid.innerHTML = data.vocabulary.map((v, i) => {
-    const cefr = (v.cefr || 'B2').toUpperCase();
-    return `
-    <div class="vocab-card" style="animation-delay:${i * 0.07}s">
-      <div class="vocab-num">0${i+1}</div>
-      <div class="vocab-word-line">
-        <span class="vocab-word">${escapeHtml(v.word)}</span>
-        <span class="vocab-cefr ${getCEFRClass(cefr)}">${escapeHtml(cefr)}</span>
-      </div>
-      <div class="vocab-zh">${escapeHtml(v.zh)}</div>
-      <div class="vocab-def">${escapeHtml(v.definition)}</div>
-      <div class="vocab-example">"${escapeHtml(v.example)}"</div>
-    </div>`;
-  }).join('');
 }
 </script>
 </body>
